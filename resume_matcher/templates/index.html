@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Resume Screening & Matcher</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #dff9fb, #c7ecee);
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: #2e86de;
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+
+        .header p {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 20px;
+            color: #34495e;
+        }
+
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-top: 8px;
+        }
+
+        input[type="submit"] {
+            background: #2e86de;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            margin-top: 30px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background: #1b4f72;
+        }
+
+        .result {
+            margin-top: 50px;
+        }
+
+        .result h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .match-card {
+            background: #f1f2f6;
+            border-left: 6px solid #2ecc71;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .no-match-card {
+            background: #fef5f5;
+            border-left: 6px solid #e74c3c;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .skills-list {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .skills-list li {
+            list-style: disc;
+            color: #2d3436;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>AI Resume Screening & Matcher</h1>
+        <p>Match candidate resumes with job descriptions using semantic similarity and skill extraction</p>
+    </div>
+
+    <div class="container">
+        <h2>Upload Resumes and Paste Job Description</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            <label for="job_desc">Job Description:</label>
+            <textarea name="job_desc" rows="6" placeholder="Paste the job description here..." required></textarea>
+
+            <label for="resumes">Upload  Resume (PDF format):</label>
+            <input type="file" name="resumes" accept=".pdf" multiple required>
+
+            <input type="submit" value="🔍 Check Matching">
+        </form>
+
+        {% if results %}
+            <div class="result">
+                <h3>📋 Candidate Matching Results:</h3>
+                {% for filename, data in results.items() %}
+                    <div class="{{ 'match-card' if data.match else 'no-match-card' }}">
+                        <strong>{{ filename }}</strong> — 
+                        {% if data.match %}
+                            <span style="color:green; font-weight:bold;">Match ✅</span>
+                        {% else %}
+                            <span style="color:red; font-weight:bold;">Not a Match ❌</span>
+                        {% endif %}
+                        <br><br>
+                        <em>Matched Skills:</em>
+                        {% if data.skills %}
+                            <ul class="skills-list">
+                                {% for skill in data.skills %}
+                                    <li>{{ skill }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <span>No matching skills found.</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>
+
+
+
+
+
+
